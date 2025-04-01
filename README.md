@@ -37,50 +37,7 @@ Web LLM Storyteller is a web application that generates short stories in Romania
   sudo apt update
   sudo apt install mpg123
 
-  Here’s a complete README.md file for your project:
-
 ---
-
-```markdown
-# Web LLM Storyteller
-
-Web LLM Storyteller is a web application that generates short stories in Romanian, converts them to audio using Text-to-Speech (TTS), and creates child-friendly cartoon-style illustrations based on the story. Users can also replay or stop the audio playback.
-
----
-
-## Features
-
-- **Story Generation**: Generates short stories in Romanian using OpenAI's GPT-3.5-turbo model.
-- **Text-to-Speech (TTS)**: Converts the generated story into audio using the `edge_tts` library with the `ro-RO-AlinaNeural` voice.
-- **Image Generation**: Creates cartoon-style, child-friendly illustrations based on the story using OpenAI's image generation API.
-- **Audio Playback Controls**: Includes buttons to play, stop, and replay the audio.
-- **Child-Friendly Design**: Focuses on creating content suitable for small children.
-
----
-
-## Technologies Used
-
-- **Backend**: Python, Flask
-- **Frontend**: HTML, CSS, JavaScript
-- **APIs**:
-  - OpenAI GPT-3.5-turbo for story generation
-  - OpenAI Image API for illustration generation
-- **Text-to-Speech**: `edge_tts` library
-- **Audio Playback**: `mpg123` (Linux), `afplay` (macOS), or `playsound` (Windows)
-
----
-
-## Setup Instructions
-
-### Prerequisites
-
-- Python 3.8 or higher
-- OpenAI API key (set as an environment variable: `OPENAI_API_KEY`)
-- `mpg123` installed (for Linux audio playback):
-  ```bash
-  sudo apt update
-  sudo apt install mpg123
-  ```
 
 ### Clone the Repository
 
@@ -121,7 +78,7 @@ The application will be available at `http://127.0.0.1:5000`.
 
 ### Generate a Story
 
-1. Enter a prompt in the input field (e.g., "A magical forest with talking animals").
+1. Enter a prompt in the input field in Romanian (e.g., "O padure magica").
 2. Click the "Generate Story" button.
 3. The app will generate a short story in Romanian.
 
