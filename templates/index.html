@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storyteller App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fef6e4; /* Pastel cream background */
+            color: #4a4e69; /* Soft dark gray text */
+        }
+        header {
+            background-color: #9a8c98; /* Pastel lavender */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #c9ada7; /* Pastel pink border */
+            border-radius: 4px;
+        }
+        input[type="text"]:focus {
+            border-color: #9a8c98; /* Pastel lavender focus */
+            outline: none;
+        }
+        button {
+            background-color: #9a8c98; /* Pastel lavender */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #4a4e69; /* Soft dark gray */
+            transform: scale(1.05); /* Slightly enlarge the button */
+        }
+        .story {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f2e9e4; /* Pastel pink background */
+            border-left: 4px solid #9a8c98; /* Pastel lavender border */
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4a4e69; /* Soft dark gray */
+            color: white;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Storyteller App</h1>
+        <p>Generate and listen to short stories in Romanian!</p>
+    </header>
+    <main>
+        <form method="POST">
+            <label for="prompt">Enter a topic for your story:</label>
+            <input type="text" id="prompt" name="prompt" placeholder="e.g., A magical forest" required title="Enter a topic for your story">
+            <button type="submit">Generate Story</button>
+        </form>
+        <div id="loading" style="display: none; text-align: center;">
+            <p>Generating your story...</p>
+            <div style="border: 4px solid #f3f3f3; border-top: 4px solid #9a8c98; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
+        </div>
+        <div id="progress-bar" style="display: none; width: 100%; background-color: #f3f3f3;">
+            <div id="progress" style="width: 0%; height: 5px; background-color: #9a8c98;"></div>
+        </div>
+        {% if story %}
+        <div class="story">
+            <h2>Your Story:</h2>
+            <p>{{ story }}</p>
+            <div id="audio-controls" style="text-align: center; margin-top: 20px;">
+                <audio id="audio" src="{{ url_for('static', filename='output.mp3') }}" autoplay></audio>
+                <button id="stop-button" style="background-color: #9a8c98; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                    Stop Playing
+                </button>
+                <button id="replay-button" style="background-color: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                    Replay Audio
+                </button>
+            </div>
+        </div>
+        {% endif %}
+        {% if image_url %}
+        <div class="image" style="text-align: center; margin-top: 20px;">
+            <h3>Generated Image:</h3>
+            <img src="{{ image_url }}" alt="Generated Image" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <p>Powered by OpenAI and Edge TTS</p>
+    </footer>
+    <script>
+        console.log('JavaScript loaded'); // Debug log
+        const form = document.querySelector('form');
+        form.addEventListener('submit', () => {
+            document.getElementById('loading').style.display = 'block';
+        });
+
+        const progressBar = document.getElementById('progress-bar');
+        const progress = document.getElementById('progress');
+        form.addEventListener('submit', () => {
+            progressBar.style.display = 'block';
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width += 10;
+                    progress.style.width = width + '%';
+                }
+            }, 500);
+        });
+
+        const stopButton = document.getElementById('stop-button');
+
+        stopButton.addEventListener('click', () => {
+            console.log('Stop button clicked'); // Debug log
+            fetch('/stop_audio', { method: 'POST' }) // Send a POST request to stop the audio
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Audio stopped successfully');
+                        stopButton.textContent = 'Stopped'; // Change button text to "Stopped"
+                        stopButton.disabled = true; // Optionally disable the button
+                    } else {
+                        console.error('Failed to stop audio');
+                    }
+                })
+                .catch(err => console.error('Error stopping audio:', err));
+        });
+
+        const replayButton = document.getElementById('replay-button');
+
+        replayButton.addEventListener('click', () => {
+            console.log('Replay button clicked'); // Debug log
+            fetch('/replay_audio', { method: 'POST' }) // Send a POST request to replay the audio
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Audio replayed successfully');
+                        // Re-enable the Stop button and reset its text
+                        stopButton.disabled = false;
+                        stopButton.textContent = 'Stop Playing';
+                    } else {
+                        console.error('Failed to replay audio');
+                    }
+                })
+                .catch(err => console.error('Error replaying audio:', err));
+        });
+    </script>
+</body>
+</html>

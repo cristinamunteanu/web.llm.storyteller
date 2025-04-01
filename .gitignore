@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Environment variables
+.env
+
+# Virtual environment
+venv/
+.env/
+
+# Logs
+*.log
+
+# Compiled files
+*.pyc
+
+# Audio and generated files
+static/output.mp3
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
