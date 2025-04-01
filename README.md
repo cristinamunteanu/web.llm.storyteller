@@ -161,5 +161,3 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - [OpenAI](https://openai.com/) for GPT-3.5-turbo and image generation APIs.
 - [edge_tts](https://github.com/rany2/edge-tts) for Text-to-Speech functionality.
 ```
-
----
